@@ -523,6 +523,8 @@ export const normalizeFile = async (file: File) => {
     return file;
   }
 
+  const { handle } = file;
+
   if (file?.name?.endsWith(".excalidrawlib")) {
     file = createFile(file, MIME_TYPES.excalidrawlib, file.name);
   } else if (file?.name?.endsWith(".excalidraw")) {
@@ -535,6 +537,11 @@ export const normalizeFile = async (file: File) => {
     if (mimeType && mimeType !== file.type) {
       file = createFile(file, mimeType, file.name);
     }
+  }
+
+  // keep the file handle (set by browser-fs-access) if we re-created the file
+  if (handle) {
+    file.handle = handle;
   }
 
   (file as any)[normalizedFileSymbol] = true;
